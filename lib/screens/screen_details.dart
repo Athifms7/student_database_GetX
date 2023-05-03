@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:student_database/db/functions/dbFunctions.dart';
 import 'package:student_database/screens/screen_edit.dart';
 
 class StudentDetails extends StatelessWidget {
-  const StudentDetails({super.key});
-
+  StudentDetails({super.key, required int this.index});
+  int index;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,28 +33,28 @@ class StudentDetails extends StatelessWidget {
                 height: 20,
               ),
               Text(
-                'Name:   `           asdf',
+                'Name:              ${studentListNotifier.value[index].name}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 10,
               ),
               Text(
-                'Age:                adsf',
+                'Age:                ${studentListNotifier.value[index].age}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 10,
               ),
               Text(
-                'Email:              asdf',
+                'Email:              ${studentListNotifier.value[index].email}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 10,
               ),
               Text(
-                'Phone:              asdf',
+                'Phone:              ${studentListNotifier.value[index].phone}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(
@@ -75,7 +74,8 @@ class StudentDetails extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
-              return StudentUpdate();
+              return StudentUpdate(
+                  student: studentListNotifier.value[index], index: index);
             },
           ));
         },

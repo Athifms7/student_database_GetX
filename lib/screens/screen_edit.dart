@@ -1,9 +1,24 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:student_database/db/functions/dbFunctions.dart';
+import 'package:student_database/db/model/student_model.dart';
+import 'package:student_database/screens/screen_home.dart';
 
 class StudentUpdate extends StatelessWidget {
-  const StudentUpdate({super.key});
+  StudentUpdate(
+      {super.key, required StudentModel this.student, required int this.index});
+  StudentModel student;
+  int index;
+
+  late TextEditingController nameController =
+      TextEditingController(text: student.name);
+  late TextEditingController ageController =
+      TextEditingController(text: student.age);
+  late TextEditingController emailController =
+      TextEditingController(text: student.email);
+  late TextEditingController phoneController =
+      TextEditingController(text: student.phone);
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +45,7 @@ class StudentUpdate extends StatelessWidget {
               height: 30,
             ),
             TextField(
+              controller: nameController,
               decoration: InputDecoration(
                   hintText: 'Enter Your Name',
                   labelText: 'Name',
@@ -39,6 +55,7 @@ class StudentUpdate extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: ageController,
               maxLength: 2,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -50,6 +67,7 @@ class StudentUpdate extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   hintText: 'Enter Your Email',
@@ -60,6 +78,7 @@ class StudentUpdate extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: phoneController,
               maxLength: 10,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -82,7 +101,28 @@ class StudentUpdate extends StatelessWidget {
                   width: 20,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (nameController.text.trim().isNotEmpty &&
+                        ageController.text.trim().isNotEmpty &&
+                        emailController.text.trim().isNotEmpty &&
+                        phoneController.text.trim().isNotEmpty) {
+                      StudentModel model = StudentModel(
+                          name: nameController.text.trim(),
+                          age: ageController.text.trim(),
+                          email: emailController.text.trim(),
+                          phone: phoneController.text.trim(),
+                          imagepath: null);
+
+                      studentListNotifier.value.removeAt(index);
+                      studentListNotifier.value.insert(index, model);
+                      studentListNotifier.notifyListeners();
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                          (route) => false);
+                    }
+                  },
                   child: Text('Update'),
                 )
               ],

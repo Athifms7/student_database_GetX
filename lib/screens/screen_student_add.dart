@@ -1,9 +1,16 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:student_database/db/functions/dbFunctions.dart';
+import 'package:student_database/db/model/student_model.dart';
 
 class StudentAdd extends StatelessWidget {
-  const StudentAdd({super.key});
+  StudentAdd({super.key});
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +37,7 @@ class StudentAdd extends StatelessWidget {
               height: 30,
             ),
             TextField(
+              controller: nameController,
               decoration: InputDecoration(
                   hintText: 'Enter Your Name',
                   labelText: 'Name',
@@ -39,6 +47,7 @@ class StudentAdd extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: ageController,
               maxLength: 2,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -50,6 +59,7 @@ class StudentAdd extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   hintText: 'Enter Your Email',
@@ -60,6 +70,7 @@ class StudentAdd extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: phoneController,
               maxLength: 10,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -81,7 +92,25 @@ class StudentAdd extends StatelessWidget {
                 SizedBox(
                   width: 20,
                 ),
-                ElevatedButton(onPressed: () {}, child: Text('Save'))
+                ElevatedButton(
+                    onPressed: () {
+                      if (nameController.text.trim().isNotEmpty &&
+                          ageController.text.trim().isNotEmpty &&
+                          emailController.text.trim().isNotEmpty &&
+                          phoneController.text.trim().isNotEmpty) {
+                        StudentModel model = StudentModel(
+                            name: nameController.text.trim(),
+                            age: ageController.text.trim(),
+                            email: emailController.text.trim(),
+                            phone: phoneController.text.trim(),
+                            imagepath: null);
+
+                        studentListNotifier.value.add(model);
+                        studentListNotifier.notifyListeners();
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Text('Save'))
               ],
             )
           ]),
