@@ -1,15 +1,29 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:student_database/db/functions/dbFunctions.dart';
 import 'package:student_database/db/model/student_model.dart';
 
-class StudentAdd extends StatelessWidget {
+class StudentAdd extends StatefulWidget {
   StudentAdd({super.key});
 
+  @override
+  State<StudentAdd> createState() => _StudentAddState();
+}
+
+class _StudentAddState extends State<StudentAdd> {
+  String imagePath = 'x';
+
   TextEditingController nameController = TextEditingController();
+
   TextEditingController ageController = TextEditingController();
+
   TextEditingController emailController = TextEditingController();
+
   TextEditingController phoneController = TextEditingController();
 
   @override
@@ -21,17 +35,19 @@ class StudentAdd extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Container(
+            SizedBox(
               height: 120,
               width: 120,
               child: ClipRRect(
                 // borderRadius: BorderRadius.circular(20),
-                child: Image(
-                    image: NetworkImage(
-                        'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')),
+                child: InkWell(
+                    onTap: () {
+                      takePic();
+                    },
+                    child: imagePath == 'x'
+                        ? Image(image: AssetImage('assets/user.png'))
+                        : Image(image: FileImage(File(imagePath)))),
               ),
-              // decoration: BoxDecoration(image:Image(image: NetworkImage(''))),
-              // color: Colors.amber,
             ),
             SizedBox(
               height: 30,
@@ -103,10 +119,9 @@ class StudentAdd extends StatelessWidget {
                             age: ageController.text.trim(),
                             email: emailController.text.trim(),
                             phone: phoneController.text.trim(),
-                            imagepath: null);
+                            imagepath: imagePath);
 
-                        studentListNotifier.value.add(model);
-                        studentListNotifier.notifyListeners();
+                        addStudent(model);
                         Navigator.of(context).pop();
                       }
                     },
@@ -117,5 +132,17 @@ class StudentAdd extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  takePic() async {
+    log('imagePath----------------------------------------------$imagePath');
+    final imageFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      setState(() {
+        imagePath = imageFile.path;
+      });
+    }
+    log('imagePath----------------------------------------------$imagePath');
   }
 }

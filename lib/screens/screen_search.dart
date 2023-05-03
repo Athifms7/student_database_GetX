@@ -1,11 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:student_database/db/functions/dbFunctions.dart';
 import 'package:student_database/db/model/student_model.dart';
 import 'package:student_database/screens/screen_details.dart';
-import 'package:student_database/screens/screen_home.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -57,17 +58,17 @@ class _SearchState extends State<Search> {
                       title: Text(searchList[index].name),
                       trailing: IconButton(
                           onPressed: () {
-                            studentListNotifier.value.removeAt(
-                                studentListNotifier.value
-                                    .indexOf(searchList[index]));
                             studentListNotifier.notifyListeners();
+                            removeStudent(studentListNotifier.value
+                                .indexOf(searchList[index]));
                             searchList.removeAt(index);
                             setState(() {});
                           },
                           icon: Icon(Icons.delete)),
                       leading: Image(
-                          image: NetworkImage(
-                              'https://cdn-icons-png.flaticon.com/512/660/660611.png')),
+                          image: searchList[index].imagepath == 'x'
+                              ? AssetImage('assets/user.png') as ImageProvider
+                              : FileImage(File(searchList[index].imagepath!))),
                     ),
                 separatorBuilder: (context, index) => Divider(),
                 itemCount: searchList.length),

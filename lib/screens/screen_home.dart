@@ -1,3 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:student_database/screens/screen_details.dart';
 import 'package:student_database/screens/screen_search.dart';
@@ -10,6 +14,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    getAllStudent();
     return Scaffold(
       appBar: AppBar(
         title: Text('Student List'),
@@ -43,24 +48,24 @@ class HomePage extends StatelessWidget {
             return ListView.separated(
                 itemBuilder: (context, index) {
                   return ListTile(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) {
-                          return StudentDetails(index: index);
-                        },
-                      ));
-                    },
-                    title: Text(gettingStudendList[index].name),
-                    trailing: IconButton(
-                        onPressed: () {
-                          studentListNotifier.value.removeAt(index);
-                          studentListNotifier.notifyListeners();
-                        },
-                        icon: Icon(Icons.delete)),
-                    leading: Image(
-                        image: NetworkImage(
-                            'https://cdn-icons-png.flaticon.com/512/660/660611.png')),
-                  );
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) {
+                            return StudentDetails(index: index);
+                          },
+                        ));
+                      },
+                      title: Text(gettingStudendList[index].name),
+                      trailing: IconButton(
+                          onPressed: () {
+                            removeStudent(index);
+                          },
+                          icon: Icon(Icons.delete)),
+                      leading: gettingStudendList[index].imagepath == 'x'
+                          ? Image(image: AssetImage('assets/user.png'))
+                          : Image(
+                              image: FileImage(
+                                  File(gettingStudendList[index].imagepath!))));
                 },
                 separatorBuilder: (context, index) => Divider(),
                 itemCount: gettingStudendList.length);

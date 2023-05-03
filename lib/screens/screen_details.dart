@@ -1,3 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:student_database/db/functions/dbFunctions.dart';
 import 'package:student_database/screens/screen_edit.dart';
@@ -21,13 +25,11 @@ class StudentDetails extends StatelessWidget {
                 width: 200,
                 height: 200,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: Image.network(
-                            'https://cdn-icons-png.flaticon.com/512/660/660611.png')
-                        .image,
-                    // fit: BoxFit.cover,
-                  ),
-                ),
+                    image: DecorationImage(
+                        image: studentListNotifier.value[index].imagepath == 'x'
+                            ? AssetImage('assets/user.png') as ImageProvider
+                            : FileImage(File(
+                                studentListNotifier.value[index].imagepath!)))),
               ),
               SizedBox(
                 height: 20,

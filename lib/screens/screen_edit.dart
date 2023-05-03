@@ -1,24 +1,35 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:student_database/db/functions/dbFunctions.dart';
 import 'package:student_database/db/model/student_model.dart';
 import 'package:student_database/screens/screen_home.dart';
 
-class StudentUpdate extends StatelessWidget {
+class StudentUpdate extends StatefulWidget {
   StudentUpdate(
       {super.key, required StudentModel this.student, required int this.index});
   StudentModel student;
   int index;
 
+  @override
+  State<StudentUpdate> createState() => _StudentUpdateState();
+}
+
+class _StudentUpdateState extends State<StudentUpdate> {
   late TextEditingController nameController =
-      TextEditingController(text: student.name);
+      TextEditingController(text: widget.student.name);
+
   late TextEditingController ageController =
-      TextEditingController(text: student.age);
+      TextEditingController(text: widget.student.age);
+
   late TextEditingController emailController =
-      TextEditingController(text: student.email);
+      TextEditingController(text: widget.student.email);
+
   late TextEditingController phoneController =
-      TextEditingController(text: student.phone);
+      TextEditingController(text: widget.student.phone);
 
   @override
   Widget build(BuildContext context) {
@@ -29,17 +40,23 @@ class StudentUpdate extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Container(
-              height: 120,
-              width: 120,
-              child: ClipRRect(
-                // borderRadius: BorderRadius.circular(20),
-                child: Image(
-                    image: NetworkImage(
-                        'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80')),
+            InkWell(
+              onTap: () {
+                updatePic();
+              },
+              child: SizedBox(
+                height: 120,
+                width: 120,
+                child: ClipRRect(
+                  child: Image(
+                      image:
+                          studentListNotifier.value[widget.index].imagepath ==
+                                  'x'
+                              ? AssetImage('assets/user.png') as ImageProvider
+                              : FileImage(File(studentListNotifier
+                                  .value[widget.index].imagepath!))),
+                ),
               ),
-              // decoration: BoxDecoration(image:Image(image: NetworkImage(''))),
-              // color: Colors.amber,
             ),
             SizedBox(
               height: 30,
@@ -111,11 +128,9 @@ class StudentUpdate extends StatelessWidget {
                           age: ageController.text.trim(),
                           email: emailController.text.trim(),
                           phone: phoneController.text.trim(),
-                          imagepath: null);
+                          imagepath: widget.student.imagepath);
 
-                      studentListNotifier.value.removeAt(index);
-                      studentListNotifier.value.insert(index, model);
-                      studentListNotifier.notifyListeners();
+                      updateStudent(widget.index, model);
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
                             builder: (context) => HomePage(),
@@ -131,5 +146,15 @@ class StudentUpdate extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  updatePic() async {
+    final imageFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      setState(() {
+        widget.student.imagepath = imageFile.path;
+      });
+    }
   }
 }
