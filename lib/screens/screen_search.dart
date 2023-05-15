@@ -61,6 +61,7 @@ class _SearchState extends State<Search> {
                             studentListNotifier.notifyListeners();
                             removeStudent(studentListNotifier.value
                                 .indexOf(searchList[index]));
+
                             searchList.removeAt(index);
                             setState(() {});
                           },

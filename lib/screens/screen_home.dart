@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
             },
           ));
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.person_add),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 10),
@@ -58,7 +58,28 @@ class HomePage extends StatelessWidget {
                       title: Text(gettingStudendList[index].name),
                       trailing: IconButton(
                           onPressed: () {
-                            removeStudent(index);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('do you want to delete'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          // removeStudent(index);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('No')),
+                                    TextButton(
+                                        onPressed: () {
+                                          removeStudent(index);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('Yes'))
+                                  ],
+                                );
+                              },
+                            );
                           },
                           icon: Icon(Icons.delete)),
                       leading: gettingStudendList[index].imagepath == 'x'
